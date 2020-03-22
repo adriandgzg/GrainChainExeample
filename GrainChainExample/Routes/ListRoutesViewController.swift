@@ -31,15 +31,7 @@ class ListRoutesViewController: UIViewController {
             
     }
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
@@ -58,7 +50,18 @@ extension ListRoutesViewController : UITableViewDelegate {
     
 }
 
-extension ListRoutesViewController : UITableViewDataSource {
+extension ListRoutesViewController : UITableViewDataSource, CellRouteDelegate{
+    func deleteRouteWith(cell: UITableViewCell) {
+        
+        let index = self.tableVIew.indexPath(for: cell)
+        if let indexToDelete = index {
+            self.viewModel.deleteRouteWith(index: indexToDelete.row)
+        }
+        self.tableVIew.reloadData()
+        
+    }
+
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return  viewModel.GetRoutes().count
     }
@@ -67,7 +70,7 @@ extension ListRoutesViewController : UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RouteTableViewCell", for: indexPath) as! RouteTableViewCell
         
         cell.configure(viewModel: viewModel.getViewModelRouteWith(index: indexPath.row))
-        
+        cell.delegate = self
         return cell
     }
     

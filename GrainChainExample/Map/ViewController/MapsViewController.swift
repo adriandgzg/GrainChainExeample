@@ -36,13 +36,24 @@ class MapsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureScreen()
-      
     }
     
     @IBAction func sharedRoute(_ sender: Any) {
     }
     
     @IBAction func deleteRoute(_ sender: Any) {
+        let alertController = UIAlertController(title: "Atention!", message: "Do you want to delete the route?", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Aceptar", style: .default) { (action) in
+            if let name = self.viewModel?.route?.nameRoute {
+                StorageRoutes.shared.deleteRouteWith(name:name )
+                self.navigationController?.popToRootViewController(animated: true)
+            }
+        }
+               
+        let cancel = UIAlertAction(title: "Cancelar", style: .default) { (action) in}
+        alertController.addAction(cancel)
+        alertController.addAction(action)
+        self.present(alertController, animated: true, completion: nil)
     }
     func configureLocationManager(){
         if viewModel!.typeScreen == typeScreen.visualizeRoute {
@@ -54,7 +65,7 @@ class MapsViewController: UIViewController {
           mapView.showsUserLocation = true
           mapView.showsCompass = true
           mapView.showsScale = true
-        
+        self.setRegion(region: mapView.userLocation.coordinate)
           currentLocation()
        }
        
@@ -125,6 +136,14 @@ class MapsViewController: UIViewController {
                 self.mapView.addOverlay(line)
             }
         }
+        if typeScreen.visualizeRoute == viewModel?.typeScreen {
+            if let initPoint = viewModel?.getFirsPoint(){
+                  self.addAnnotationsOnMap(locationToPoint: initPoint)
+            }
+            if let finalPoint = viewModel?.getLastPoint(){
+                self.addAnnotationsOnMap(locationToPoint:finalPoint)
+            }
+        }
     }
     
     func addAnnotationsOnMap(locationToPoint : CLLocation){
@@ -147,28 +166,61 @@ class MapsViewController: UIViewController {
           
         })
     }
-    func InitializeRecord(){
+    
+    func clearMap(){
+        
+        for anotation in self.mapView.annotations{
+            self.mapView.removeAnnotation(anotation)
+        }
+        
+        for polygons in self.mapView.overlays {
+            self.mapView.removeOverlay(polygons)
+        }
         
     }
+    func stopRecord(){
+        locationManager.stopUpdatingLocation()
+                   locationManager.stopUpdatingHeading()
+    }
+    func startRecord(){
+        locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
+    }
+    
+    
     @IBAction func clickRestart(_ sender: Any) {
-        self.viewModel?.clearRoute()
-        self.addRoute()
-        self.clickPlay(btnRecord!)
+        if recordingRoute {
+            stopRecord()
+            lastPoint = nil
+            self.viewModel?.clearRoute()
+            clearMap()
+            self.clickPlay(btnRecord!)
+            firstTime = true
+        }else{
+             self.viewModel?.clearRoute()
+             clearMap()
+             firstTime = true
+             lastPoint = nil
+        }
     }
     
     @IBAction func clickPlay(_ sender: Any) {
         recordingRoute = !recordingRoute
         if recordingRoute {
+            viewModel?.clearRoute()
+            clearMap()
             (sender as! UIButton).setTitle("Stop", for: .normal)
-            (sender as! UIButton).backgroundColor = #colorLiteral(red: 0.4392156899, green: 0.01176470611, blue: 0.1921568662, alpha: 1)
-            locationManager.startUpdatingLocation()
-            locationManager.startUpdatingHeading()
+            (sender as! UIButton).backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
+            
+            startRecord()
             
         }else{
              (sender as! UIButton).setTitle("Record", for: .normal)
              (sender as! UIButton).backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-            locationManager.stopUpdatingLocation()
-            locationManager.stopUpdatingHeading()
+            stopRecord()
+            if let final = self.viewModel?.getLastPoint(){
+                self.addAnnotationsOnMap(locationToPoint: final)
+            }
         }
     }
     
@@ -176,7 +228,7 @@ class MapsViewController: UIViewController {
         let alertController = UIAlertController(title: "Guardar Ruta", message: "", preferredStyle: .alert)
 
         alertController.addTextField { (textField : UITextField!) -> Void in
-            textField.placeholder = "Nombre"
+            textField.placeholder = "Nombre de la ruta"
         }
 
         let saveAction = UIAlertAction(title: "Guardar", style: .default, handler: { alert -> Void in
@@ -189,12 +241,8 @@ class MapsViewController: UIViewController {
         })
 
         let cancelAction = UIAlertAction(title: "Cancelar", style: .default, handler: nil )
-
-    
-
-        alertController.addAction(saveAction)
         alertController.addAction(cancelAction)
-
+        alertController.addAction(saveAction)
         self.present(alertController, animated: true, completion: nil)
     }
 }
@@ -202,7 +250,6 @@ class MapsViewController: UIViewController {
 extension MapsViewController:MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        
         if (overlay is MKPolyline) {
             let pr = MKPolylineRenderer(overlay: overlay)
             pr.strokeColor =  UIColor.green
@@ -211,57 +258,32 @@ extension MapsViewController:MKMapViewDelegate{
         }
         return MKOverlayRenderer()
     }
-    
  
-    
 }
 
 
 extension MapsViewController: CLLocationManagerDelegate{
-    
-    
        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
           let location = locations.last! as CLLocation
-          let currentLocation = location.coordinate
-          let coordinateRegion = MKCoordinateRegion(center: currentLocation, latitudinalMeters: 200, longitudinalMeters: 200)
-         
-//          locationManager.stopUpdatingLocation()
-        
+          
         
         if lastPoint != nil && lastPoint!.distance(from: locations.last!) > 10 {
-            
             lastPoint = locations.last
             viewModel?.addPoint(point:  locations.last!)
-            mapView.setRegion(coordinateRegion, animated: true)
-            
-           
-                
-                
-            var time = ""
-            if startDate == nil {
-                startDate = Date()
-            } else {
-                print("elapsedTime:", String(format: "%.0fs", Date().timeIntervalSince(startDate!)))
-                time = "Tiempo " +  String(format: "%.2fs", Date().timeIntervalSince(startDate!)) + "\n"
-            }
-                     traveledDistance += viewModel?.getFirsPoint()?.distance(from: location) ?? 0.0
-                     print("Traveled Distance:",  traveledDistance)
-                     lblInformationROute.text = time + "Distancia : " + String(format: "%.2f metros",traveledDistance)
-                            
-            
             self.addRoute()
 
         }else if( firstTime) {
-            
             lastPoint = locations.last!
+            self.addAnnotationsOnMap(locationToPoint: lastPoint!)
             firstTime = false
+            setRegion(region: location.coordinate)
         }
-        
-        
-       
-        
        }
+    func setRegion(region: CLLocationCoordinate2D){
+        let coordinateRegion = MKCoordinateRegion(center: region, latitudinalMeters: 200, longitudinalMeters: 200)
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
           print(error.localizedDescription)

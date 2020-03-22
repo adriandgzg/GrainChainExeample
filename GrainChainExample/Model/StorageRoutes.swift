@@ -78,10 +78,13 @@ class StorageRoutes :NSObject, NSCoding{
     }
     func Sincronize(){
 //        NSKeyedArchiver.archivedData(withRootObject: self)
-    
-        if (try? NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)) != nil{
-        
-        }
+       
+//        NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+//        guard (try? NSKeyedArchiver.archivedData(withRootObject: self as StorageRoutes, requiringSecureCoding: false) as NSData) != nil
+//            else {
+//                fatalError("Can't encode data") }
+         
+        saveCardsInUserDefaults()
 
     }
    
@@ -92,6 +95,7 @@ class StorageRoutes :NSObject, NSCoding{
    
     func deleteCard(index:Int){
         self.arrRoutes?.remove(at: index)
+        self.Sincronize()
     }
    
     func clearAllEnrolled(){
@@ -99,5 +103,17 @@ class StorageRoutes :NSObject, NSCoding{
         self.arrRoutes = []
         self.Sincronize()
     }
-    
+    func deleteRouteWith(name:String){
+        
+        var index = -1
+        for route in self.arrRoutes ?? [] {
+             index += 1
+            if route.nameRoute == name  {
+                break
+            }
+           
+        }
+        self.arrRoutes?.remove(at: index)
+        self.Sincronize()
+    }
 }

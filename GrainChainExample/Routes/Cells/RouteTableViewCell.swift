@@ -9,7 +9,7 @@
 import UIKit
 
 class RouteTableViewCell: UITableViewCell {
-
+    var delegate: CellRouteDelegate? = nil
     @IBOutlet weak var lblName: UILabel!
     @IBOutlet weak var lblDate: UILabel!
     @IBOutlet weak var lblDistance: UILabel!
@@ -28,8 +28,11 @@ class RouteTableViewCell: UITableViewCell {
         self.lblName.text = "Name : " +  viewModel.nameRoute
         self.lblDate.text = "Date : " + viewModel.dateOfCreation
         self.lblDistance.text = "Distance : " + viewModel.distance
-        
-        
+    }
+    @IBAction func btnDeleteClick(_ sender: Any) {
+        if delegate != nil {
+            delegate?.deleteRouteWith(cell: self)
+        }
     }
     
 }

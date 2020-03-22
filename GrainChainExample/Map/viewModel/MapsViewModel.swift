@@ -50,15 +50,19 @@ class MapsViewModel {
     }
     func getFirsPoint()-> CLLocation? {
         
-        if let element = self.route?.pointsRoute[0] {
-                return element
+        if self.route?.pointsRoute.count ?? 0 > 1 {
+            if let element = self.route?.pointsRoute[0] {
+                    return element
+            }
         }
-        
-        
         return nil
     }
     func getLastPoint()-> CLLocation? {
            
+        if self.route!.pointsRoute.count < 2 {
+            return nil
+        }
+        
         if let element = self.route?.pointsRoute[(self.route!.pointsRoute.count )-1] {
                    return element
           

@@ -47,4 +47,13 @@ class ViewModelRoutes {
         return nil
         
     }
+    
+    func deleteRouteWith(index:Int){
+        StorageRoutes.shared.deleteCard(index: index)
+    }
+}
+
+
+protocol CellRouteDelegate {
+    func deleteRouteWith(cell:UITableViewCell)
 }

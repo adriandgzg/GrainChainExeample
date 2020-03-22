@@ -30,6 +30,13 @@ class MapsViewModel {
         return nil
         
     }
+    func getOverlay(overlay:MKOverlay)->MKOverlayRenderer{
+        
+        let pr = MKPolylineRenderer(overlay: overlay)
+                pr.strokeColor =  UIColor.green
+                pr.lineWidth = 5
+        return pr
+    }
     func addRouteInRoutes(){
         
         StorageRoutes.shared.AddCard(route: self.route!)

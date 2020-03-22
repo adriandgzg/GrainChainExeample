@@ -37,7 +37,11 @@ class MapsViewController: UIViewController {
         super.viewDidLoad()
         configureScreen()
     }
-    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        stopRecord()
+        
+    }
     @IBAction func sharedRoute(_ sender: Any) {
     }
     
@@ -110,25 +114,18 @@ class MapsViewController: UIViewController {
     }
     
     func centerMapOnLocation(location: CLLocation) {
-        
         if let radius =   viewModel?.regionRadius {
             let coordinateRegion = MKCoordinateRegion(center: location.coordinate,
                                                       latitudinalMeters: radius, longitudinalMeters: radius)
             mapView.setRegion(coordinateRegion, animated: true)
         }
-        
-        
-                
-                           
         lblInformationROute.text = viewModel?.getInformation()
-                                   
     }
 
     func addRoute(){
         for over in self.mapView.overlays {
             self.mapView.removeOverlay(over)
         }
-        
         
         if let data = viewModel {
             let myPolyline =   data.getRoute()
@@ -225,6 +222,10 @@ class MapsViewController: UIViewController {
     }
     
     @IBAction func clickSaveRoute(_ sender: Any) {
+        
+        if viewModel?.route?.pointsRoute.count == 0{
+            return 
+        }
         let alertController = UIAlertController(title: "Guardar Ruta", message: "", preferredStyle: .alert)
 
         alertController.addTextField { (textField : UITextField!) -> Void in
@@ -251,10 +252,7 @@ extension MapsViewController:MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if (overlay is MKPolyline) {
-            let pr = MKPolylineRenderer(overlay: overlay)
-            pr.strokeColor =  UIColor.green
-            pr.lineWidth = 5
-            return pr
+            return viewModel?.getOverlay(overlay: overlay) ?? MKOverlayRenderer()
         }
         return MKOverlayRenderer()
     }

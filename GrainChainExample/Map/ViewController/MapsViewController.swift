@@ -34,7 +34,7 @@ class MapsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print(StorageRoutes.shared.arrRoutes?.count)
         configureScreen()
       
     }

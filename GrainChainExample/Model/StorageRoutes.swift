@@ -45,9 +45,19 @@ class StorageRoutes :NSObject, NSCoding{
  
        func saveCardsInUserDefaults(){
            let defaults = UserDefaults.standard
-           
-           let EnrolledCards = NSKeyedArchiver.archivedData(withRootObject: self)
-           defaults.set(EnrolledCards, forKey:keyRoutes)
+        
+           if #available(iOS 13, *) {
+               // use UICollectionViewCompositionalLayout
+              let enrolledCard = try? NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+             defaults.set(enrolledCard, forKey:keyRoutes)
+           } else {
+               // show sad face emoji
+              let EnrolledCards = NSKeyedArchiver.archivedData(withRootObject: self)
+             defaults.set(EnrolledCards, forKey:keyRoutes)
+           }
+          
+         
+          
        }
   class func loadRoutesSaved()-> StorageRoutes?{
     let defaults = UserDefaults.standard

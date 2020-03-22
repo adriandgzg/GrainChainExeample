@@ -11,17 +11,7 @@ import MapKit
 
 class Route : NSObject, NSCoding{
     
-    func encode(with coder: NSCoder) {
-        coder.encode(self.pointsRoute, forKey: "pointsRoute")
-        coder.encode(self.nameRoute, forKey: "nameRoute")
-    }
-    
-    required convenience init?(coder: NSCoder) {
-        let arrEle = coder.decodeObject(forKey: "pointsRoute") as! [CLLocation]
-         let nameRoute = coder.decodeObject(forKey: "nameRoute") as! String
-        
-        self.init(arr:arrEle,name:nameRoute)
-    }
+  
     
     var pointsRoute : [CLLocation] = []
     var nameRoute = ""
@@ -33,7 +23,17 @@ class Route : NSObject, NSCoding{
         self.pointsRoute = arr
         self.nameRoute = name
     }
-    
+    func encode(with coder: NSCoder) {
+          coder.encode(self.pointsRoute, forKey: "pointsRoute")
+          coder.encode(self.nameRoute, forKey: "nameRoute")
+      }
+      
+      required convenience init?(coder: NSCoder) {
+          let arrEle = coder.decodeObject(forKey: "pointsRoute") as! [CLLocation]
+           let nameRoute = coder.decodeObject(forKey: "nameRoute") as! String
+          
+          self.init(arr:arrEle,name:nameRoute)
+      }
     func clearRute(){
         pointsRoute = []
     }
@@ -49,15 +49,16 @@ class Route : NSObject, NSCoding{
                 traveledDistance  += initialPosition.distance(from: loc)
                 initialPosition = loc
             }
+            
         }
         
-        return 0.0
+        return traveledDistance
     }
     func getDuration()-> Double{
         if pointsRoute.count > 2 {
             let initialDate = pointsRoute[0].timestamp
             let lastDate = pointsRoute[pointsRoute.count - 1].timestamp
-            _ =  String(format: "%.0fs", lastDate.timeIntervalSince(initialDate))
+            _ =  String(format: "%.02f minutes", (lastDate.timeIntervalSince(initialDate) / 60))
             return lastDate.timeIntervalSince(initialDate)
         }
         

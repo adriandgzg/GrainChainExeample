@@ -16,7 +16,7 @@ class MapsViewModel {
     
     var typeScreen:typeScreen  = .recordRoute
     
-        let regionRadius: CLLocationDistance = 500
+        let regionRadius: CLLocationDistance = 200
         var route : Route? = nil
         var initialLocation = CLLocation(latitude: 21.282778, longitude: -157.829444)
      init(){
@@ -82,5 +82,9 @@ class MapsViewModel {
 
     func clearRoute(){
         self.route?.clearRute()
+    }
+    func getInformation() -> String{
+        let time = String(format:"%0.02f minutes",((self.getDuration() ) / 60) )
+        return  "Time     : " + time + "\nDistance : " + String(format: "%0.02f meters",self.getDistance() )
     }
 }

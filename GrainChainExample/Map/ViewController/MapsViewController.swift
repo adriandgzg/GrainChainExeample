@@ -18,7 +18,8 @@ class MapsViewController: UIViewController {
     var startDate :Date? = nil
     var recordingRoute =  false
     var traveledDistance = 0.0
-   fileprivate let locationManager: CLLocationManager = {
+    @IBOutlet weak var btnRecord: UIButton!
+    fileprivate let locationManager: CLLocationManager = {
         let manager = CLLocationManager()
         manager.requestWhenInUseAuthorization()
         return manager
@@ -34,7 +35,6 @@ class MapsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(StorageRoutes.shared.arrRoutes?.count)
         configureScreen()
       
     }
@@ -54,6 +54,7 @@ class MapsViewController: UIViewController {
           mapView.showsUserLocation = true
           mapView.showsCompass = true
           mapView.showsScale = true
+        
           currentLocation()
        }
        
@@ -66,19 +67,21 @@ class MapsViewController: UIViewController {
           } else {
              // Fallback on earlier versions
           }
-         locationManager.startUpdatingLocation()
-         locationManager.startUpdatingHeading()
+         
        }
     
     func  configureMap() {
-        if let initial = viewModel?.initialLocation {
+        if let initial = viewModel?.getInitialLocation() {
                   centerMapOnLocation(location: initial)
+
+          
         }
+        
     }
     func configureScreen(){
          mapView.delegate = self
         if viewModel!.typeScreen  == .recordRoute{
-//            viewVIsualizeRoute.isHidden = true
+           viewVIsualizeRoute.isHidden = true
             self.mapView.showsUserLocation = true
             viewModel?.route?.clearRute()
          
@@ -102,6 +105,12 @@ class MapsViewController: UIViewController {
                                                       latitudinalMeters: radius, longitudinalMeters: radius)
             mapView.setRegion(coordinateRegion, animated: true)
         }
+        
+        
+                
+                           
+        lblInformationROute.text = viewModel?.getInformation()
+                                   
     }
 
     func addRoute(){
@@ -143,14 +152,23 @@ class MapsViewController: UIViewController {
     }
     @IBAction func clickRestart(_ sender: Any) {
         self.viewModel?.clearRoute()
+        self.addRoute()
+        self.clickPlay(btnRecord!)
     }
     
     @IBAction func clickPlay(_ sender: Any) {
         recordingRoute = !recordingRoute
         if recordingRoute {
             (sender as! UIButton).setTitle("Stop", for: .normal)
+            (sender as! UIButton).backgroundColor = #colorLiteral(red: 0.4392156899, green: 0.01176470611, blue: 0.1921568662, alpha: 1)
+            locationManager.startUpdatingLocation()
+            locationManager.startUpdatingHeading()
+            
         }else{
              (sender as! UIButton).setTitle("Record", for: .normal)
+             (sender as! UIButton).backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            locationManager.stopUpdatingLocation()
+            locationManager.stopUpdatingHeading()
         }
     }
     
@@ -165,7 +183,8 @@ class MapsViewController: UIViewController {
             let txtf = alertController.textFields![0] as UITextField
             self.viewModel?.setNameRoute(name:txtf.text ?? "Default Name" )
             self.viewModel?.addRouteInRoutes()
-            
+            self.locationManager.stopUpdatingLocation()
+            self.locationManager.stopUpdatingHeading()
            
         })
 

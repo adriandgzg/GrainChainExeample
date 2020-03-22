@@ -66,10 +66,16 @@ Time: 1 hr, 30 min</string>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6V0-CX-IZO">
                                                         <rect key="frame" x="16" y="95" width="49" height="30"/>
                                                         <state key="normal" title="Shared"/>
+                                                        <connections>
+                                                            <action selector="sharedRoute:" destination="xPz-kv-BD0" eventType="touchUpInside" id="S9S-83-AVD"/>
+                                                        </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vBO-xe-8VH">
                                                         <rect key="frame" x="309" y="95" width="89" height="30"/>
                                                         <state key="normal" title="Delete Route"/>
+                                                        <connections>
+                                                            <action selector="deleteRoute:" destination="xPz-kv-BD0" eventType="touchUpInside" id="WOm-b8-hPS"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -93,16 +99,25 @@ Time: 1 hr, 30 min</string>
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oBQ-5P-FXm">
-                                                                <rect key="frame" x="0.0" y="0.0" width="181.5" height="80"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="155.5" height="80"/>
                                                                 <state key="normal" title="Restart"/>
+                                                                <connections>
+                                                                    <action selector="clickRestart:" destination="xPz-kv-BD0" eventType="touchUpInside" id="ugx-la-Fn1"/>
+                                                                </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2l-z9-CXD">
-                                                                <rect key="frame" x="181.5" y="0.0" width="109" height="80"/>
-                                                                <state key="normal" title="Play"/>
+                                                                <rect key="frame" x="155.5" y="0.0" width="152.5" height="80"/>
+                                                                <state key="normal" title="Record"/>
+                                                                <connections>
+                                                                    <action selector="clickPlay:" destination="xPz-kv-BD0" eventType="touchUpInside" id="2p6-PK-4Ek"/>
+                                                                </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ml-Ko-7wf">
-                                                                <rect key="frame" x="290.5" y="0.0" width="123.5" height="80"/>
+                                                                <rect key="frame" x="308" y="0.0" width="106" height="80"/>
                                                                 <state key="normal" title="Save"/>
+                                                                <connections>
+                                                                    <action selector="clickSaveRoute:" destination="xPz-kv-BD0" eventType="touchUpInside" id="Z8X-JG-0vy"/>
+                                                                </connections>
                                                             </button>
                                                         </subviews>
                                                     </stackView>
@@ -142,6 +157,7 @@ Time: 1 hr, 30 min</string>
                         <viewLayoutGuide key="safeArea" id="GsV-B9-Bsh"/>
                     </view>
                     <connections>
+                        <outlet property="lblInformationROute" destination="MZJ-xx-TdP" id="HlF-ff-3gn"/>
                         <outlet property="mapView" destination="jbP-By-J8S" id="1W3-fS-VDg"/>
                         <outlet property="viewRecordRoute" destination="GUP-oE-GHM" id="lr4-mb-fE5"/>
                         <outlet property="viewVIsualizeRoute" destination="B3R-AB-UIO" id="HtB-qk-c4n"/>

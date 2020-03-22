@@ -8,19 +8,35 @@
 
 import UIKit
 import MapKit
-
+enum typeScreen {
+    case recordRoute
+    case visualizeRoute
+}
 class MapsViewModel {
+    
+    var typeScreen:typeScreen  = .recordRoute
     
         let regionRadius: CLLocationDistance = 500
         var route : Route? = nil
         var initialLocation = CLLocation(latitude: 21.282778, longitude: -157.829444)
      init(){
         route = Route()
-        
-        initialLocation =  CLLocation(latitude:   route!.route[0].latitude, longitude: route!.route[0].longitude)
+    
+    }
+    func getInitialLocation()-> CLLocation?{
+        if route?.pointsRoute.count ?? 0 > 0 {
+            return self.getFirsPoint()
+        }
+        return nil
         
     }
-    
+    func addRouteInRoutes(){
+        
+        StorageRoutes.shared.AddCard(route: self.route!)
+    }
+    func setNameRoute(name:String){
+        self.route?.nameRoute = name
+    }
     func getRoute() -> MKPolyline?
     {
         if let rout = self.route {
@@ -29,6 +45,42 @@ class MapsViewModel {
         return nil
     }
     
+    func ExistOneLocalization()-> Bool{
+        return route?.pointsRoute.count ?? 0 > 0
+    }
+    func getFirsPoint()-> CLLocation? {
+        
+        if let element = self.route?.pointsRoute[0] {
+                return element
+        }
+        
+        
+        return nil
+    }
+    func getLastPoint()-> CLLocation? {
+           
+        if let element = self.route?.pointsRoute[(self.route!.pointsRoute.count )-1] {
+                   return element
+          
+        }
+           
+           
+           return nil
+       }
+    func addPoint(point:CLLocation){
+        self.route?.addPoint(cordinate: point)
+        
+    }
     
+    func getDistance()-> Double {
+        return route!.getDistance()
+    }
     
+    func getDuration() -> Double {
+        return route!.getDuration()
+    }
+
+    func clearRoute(){
+        self.route?.clearRute()
+    }
 }

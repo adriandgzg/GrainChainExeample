@@ -66,5 +66,9 @@
 	</array>
 	<key>Privacy – Location When In Use Usage Description</key>
 	<string> needs access to your location in order to record and track your route!</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>test</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Use Location</string>
 </dict>
 </plist>

@@ -9,14 +9,73 @@
 import UIKit
 import MapKit
 
-class Route {
-    var route : [CLLocationCoordinate2D] = []
+class Route : NSObject, NSCoding{
     
-    init(){
-        self.getPoligone()
+    func encode(with coder: NSCoder) {
+        coder.encode(self.pointsRoute, forKey: "pointsRoute")
+        coder.encode(self.nameRoute, forKey: "nameRoute")
+    }
+    
+    required convenience init?(coder: NSCoder) {
+        let arrEle = coder.decodeObject(forKey: "pointsRoute") as! [CLLocation]
+         let nameRoute = coder.decodeObject(forKey: "nameRoute") as! String
+        
+        self.init(arr:arrEle,name:nameRoute)
+    }
+    
+    var pointsRoute : [CLLocation] = []
+    var nameRoute = ""
+    
+    override init(){
+      pointsRoute = []
+    }
+    init(arr:[CLLocation],name:String){
+        self.pointsRoute = arr
+        self.nameRoute = name
+    }
+    
+    func clearRute(){
+        pointsRoute = []
     }
 
+    func getDistance()-> Double{
+       var traveledDistance: Double = 0
+//        += lastLocation.distance(from: location)
+
+        if pointsRoute.count > 0 {
+            var initialPosition = pointsRoute[0]
+            
+            for loc in pointsRoute {
+                traveledDistance  += initialPosition.distance(from: loc)
+                initialPosition = loc
+            }
+        }
+        
+        return 0.0
+    }
+    func getDuration()-> Double{
+        if pointsRoute.count > 2 {
+            let initialDate = pointsRoute[0].timestamp
+            let lastDate = pointsRoute[pointsRoute.count - 1].timestamp
+            _ =  String(format: "%.0fs", lastDate.timeIntervalSince(initialDate))
+            return lastDate.timeIntervalSince(initialDate)
+        }
+        
+        return 0.0
+    }
+    func addPoint(cordinate:CLLocation){
+
+           pointsRoute.append(cordinate)
+           
+           
+       }
+    
     func getPoligone() -> MKPolyline {
+        let routeC = pointsRoute.map { $0.coordinate}
+        let myPolyline = MKPolyline(coordinates: routeC, count: pointsRoute.count)
+        return myPolyline
+    }
+    func getPoligoneHarcode() -> MKPolyline {
         
         let points = ["{34.42367,-118.594836}",
            "{34.423597,-118.595205}",
@@ -40,8 +99,9 @@ class Route {
          let coords = cgPoints.map { CLLocationCoordinate2DMake(CLLocationDegrees($0.x), CLLocationDegrees($0.y)) }
         
          let myPolyline = MKPolyline(coordinates: coords, count: coords.count)
-         route = coords
+       
         return myPolyline
     }
 }
+
 

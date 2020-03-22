@@ -23,6 +23,8 @@ Al compilar aceptar los permisos en el simulador o en el dispositivo
 ```
 Con esto se puede ejecutar de manera correcta el ejemplo
 ```
+Para poder ejecutar la prueba correctamente, se requere tener un iphone y compilar la aplicacion con un certificado valido para probar en el iphone.
+
 
 
 ## Ejecutando las pruebas ⚙️
@@ -41,7 +43,6 @@ Da un ejemplo
 
 ## Construido con 🛠️
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
 
 * [XCODE](https://developer.apple.com/xcode/) - El IDE usado
 * [Cocoapods](https://cocoapods.org) - Para instalaciond de librerias 

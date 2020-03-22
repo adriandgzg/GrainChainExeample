@@ -10,11 +10,22 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    
     override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        super.viewDidLoad()        // Do any additional setup after loading the view.
+        
     }
 
-
+    @IBAction func clickInitializeDemo(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let secondViewController = storyboard.instantiateViewController(withIdentifier: "MapsViewController") as! MapsViewController
+        
+         let secondViewController = storyboard.instantiateViewController(withIdentifier: "ListRoutesViewController") as! ListRoutesViewController
+        
+       self.navigationController?.pushViewController(secondViewController, animated: true)
+    
+        
+    }
+    
 }
 

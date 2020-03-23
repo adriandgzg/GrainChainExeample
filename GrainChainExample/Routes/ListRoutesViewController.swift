@@ -118,15 +118,13 @@ extension ListRoutesViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let route = viewModel.getRoute(index: indexPath.row)
         
-        if !checkPermision {
-            checkPermisionFunction()
-        }else{
+       
              let storyboard = UIStoryboard(name: "Main", bundle: nil)
              let secondViewController = storyboard.instantiateViewController(withIdentifier: "MapsViewController") as! MapsViewController
             secondViewController.viewModel?.route = route
             secondViewController.viewModel?.typeScreen = .visualizeRoute
             self.navigationController?.pushViewController(secondViewController, animated: true)
-        }
+        
     }
     
     

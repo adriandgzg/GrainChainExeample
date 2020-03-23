@@ -43,6 +43,21 @@ class MapsViewController: UIViewController {
         
     }
     @IBAction func sharedRoute(_ sender: Any) {
+        let latitud =  String(self.viewModel?.getFirsPoint()?.coordinate.latitude ?? 0.0)
+        let longitud = String(self.viewModel?.getFirsPoint()?.coordinate.longitude ?? 0.0)
+        
+        let text = "Latitud: " + latitud + " Longitud:" + longitud
+        
+              // set up activity view controller
+              let textToShare = [ text ]
+              let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+              activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+
+              // exclude some activity types from the list (optional)
+        activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+
+              // present the view controller
+              self.present(activityViewController, animated: true, completion: nil)
     }
     
     @IBAction func deleteRoute(_ sender: Any) {
